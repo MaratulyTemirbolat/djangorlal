@@ -2,9 +2,7 @@
 
 # Django modules
 from django.db.models import (
-    Model,
     CharField,
-    DateTimeField,
     TextField,
     IntegerField,
     ForeignKey,
@@ -16,9 +14,10 @@ from django.db.models import (
 from django.contrib.auth.models import User
 
 # Project modules
+from apps.abstracts.models import AbstractBaseModel
 
 
-class Project(Model):
+class Project(AbstractBaseModel):
     """
     Project database (table) model.
     """
@@ -38,19 +37,17 @@ class Project(Model):
         blank=True,
         related_name="joined_projects",
     )
-    created_at = DateTimeField(
-        auto_now_add=True
-    )
-    updated_at = DateTimeField(
-        auto_now=True
-    )
-    deleted_at = DateTimeField(
-        null=True,
-        blank=True,
-    )
+
+    def __repr__(self) -> str:
+        """Returns the official string representation of the object."""
+        return f"Project(id={self.id}, name={self.name})"
+
+    def __str__(self) -> str:
+        """Returns the string representation of the object."""
+        return self.name
 
 
-class Task(Model):
+class Task(AbstractBaseModel):
     """
     Task database (table) model.
     """
@@ -101,19 +98,9 @@ class Task(Model):
         through_fields=("task", "user"),
         blank=True,
     )
-    created_at = DateTimeField(
-        auto_now_add=True
-    )
-    updated_at = DateTimeField(
-        auto_now=True
-    )
-    deleted_at = DateTimeField(
-        null=True,
-        blank=True,
-    )
 
 
-class UserTask(Model):
+class UserTask(AbstractBaseModel):
     """
     UserTask database (table) model.
     """
@@ -125,16 +112,6 @@ class UserTask(Model):
     user = ForeignKey(
         to=User,
         on_delete=CASCADE,
-    )
-    created_at = DateTimeField(
-        auto_now_add=True
-    )
-    updated_at = DateTimeField(
-        auto_now=True
-    )
-    deleted_at = DateTimeField(
-        null=True,
-        blank=True,
     )
 
     class Meta:
