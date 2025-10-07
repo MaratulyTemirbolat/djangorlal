@@ -1,4 +1,6 @@
 # Python modules
+from typing import Any
+
 # from datetime import datetime, timezone
 
 # Django modules
@@ -27,7 +29,7 @@ class AbstractBaseModel(Model):
 
         abstract = True
 
-    def delete(self, *args, **kwargs) -> None:
+    def delete(self, *args: tuple[Any, ...], **kwargs: dict[Any, Any]) -> None:
         """Soft delete the object by setting deleted_at timestamp."""
 
         # self.deleted_at = datetime.now(timezone.utc)  # Purely python way
