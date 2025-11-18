@@ -44,7 +44,7 @@ class Project(AbstractBaseModel):
 
     def __str__(self) -> str:
         """Returns the string representation of the object."""
-        return self.name
+        return f"Name: {self.name} Author: {self.author.full_name} Users: {self.users.count()}"
 
 
 class Task(AbstractBaseModel):
@@ -91,6 +91,7 @@ class Task(AbstractBaseModel):
     project = ForeignKey(
         to=Project,
         on_delete=CASCADE,
+        related_name="tasks",
     )
     assignees = ManyToManyField(
         to=CustomUser,
@@ -98,6 +99,20 @@ class Task(AbstractBaseModel):
         through_fields=("task", "user"),
         blank=True,
     )
+
+    def get_status_as_dict(self) -> dict[str, int | str]:
+        """
+        Get the status of the task as a dictionary.
+
+        Returns:
+            dict
+                A dictionary containing the status id and label.
+        """
+        assert self.status in self.STATUS_CHOICES, f"Invalid status value {self.status}."
+        return {
+            "id": self.status,
+            "label": self.STATUS_CHOICES[self.status],
+        }
 
 
 class UserTask(AbstractBaseModel):
