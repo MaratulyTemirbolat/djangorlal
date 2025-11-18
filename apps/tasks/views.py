@@ -8,16 +8,28 @@ from django.db.models import QuerySet, Count
 
 # Django REST Framework
 from rest_framework.viewsets import ViewSet
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request as DRFRequest
 from rest_framework.response import Response as DRFResponse
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
+)
+from rest_framework.decorators import action
 
 # Project modules
-from apps.tasks.models import Project
+from apps.tasks.models import Project, Task, UserTask
+from apps.tasks.permissions import IsUserInProject
 from apps.tasks.serializers import (
+    ProjectBaseSerializer,
     ProjectListSerializer,
     ProjectCreateSerializer,
     ProjectUpdateSerializer,
+    TaskListSerializer,
+    TaskCreateSerializer,
 )
 
 def hello_view(
@@ -54,6 +66,10 @@ class ProjectViewSet(ViewSet):
     ViewSet for handling Project-related endpoints.
     """
 
+    # permission_classes = (IsAuthenticated,)
+    serializer_class = ProjectBaseSerializer
+
+
     def list(
         self,
         request: DRFRequest,
@@ -77,7 +93,7 @@ class ProjectViewSet(ViewSet):
                 A response containing list of projects.
         """
 
-        all_projects: QuerySet[Project] = Project.objects.annotate(
+        all_projects: QuerySet[Project] = Project.objects.select_related("author").annotate(
             users_count=Count("users", distinct=True)
         ).all()
 
@@ -196,3 +212,108 @@ class ProjectViewSet(ViewSet):
         return DRFResponse(
             status=HTTP_204_NO_CONTENT
         )
+
+    @action(
+        methods=("GET",),
+        detail=True,
+        url_name="tasks",
+        url_path="tasks",
+        # permission_classes=(IsAuthenticated, IsUserInProject,)
+    )
+    def get_tasks(self, request: DRFRequest, *args: tuple[Any, ...], **kwargs: dict[str, Any]) -> DRFResponse:
+        """
+        Handle GET requests to retrieve tasks for a specific project.
+
+        Parameters:
+            request: DRFRequest
+                The request object.
+            *args: list
+                Additional positional arguments.
+            **kwargs: dict
+                Additional keyword arguments.
+        Returns:
+            DRFResponse
+                A response containing list of tasks for the specified project.
+        """
+        try:
+            project: Project = Project.objects.get(id=kwargs["pk"])
+        except Project.DoesNotExist:
+            return DRFResponse(
+                data={
+                    "id": [f"Project with id={kwargs['pk']} does not exist."]
+                },
+                status=HTTP_404_NOT_FOUND
+            )
+
+        self.check_object_permissions(request=request, obj=project)
+
+        return DRFResponse(
+            data=TaskListSerializer(
+                project.tasks.prefetch_related("assignees").all(),
+                many=True,
+            ).data,
+            status=HTTP_200_OK
+        )
+
+    @action(
+        methods=("POST",),
+        detail=True,
+        url_name="create_task",
+        url_path="create-task",
+        permission_classes=(IsAuthenticated, IsUserInProject,),
+    )
+    def create_task(self, request: DRFRequest, *args: tuple[Any, ...], **kwargs: dict[str, Any]) -> DRFResponse:
+        """
+        Handle POST requests to create a new task for a specific project.
+
+        Parameters:
+            request: DRFRequest
+                The request object.
+            *args: list
+                Additional positional arguments.
+            **kwargs: dict
+                Additional keyword arguments.
+        Returns:
+            DRFResponse
+                A response indicating the result of the task creation operation.
+        """
+        try:
+            project: Project = Project.objects.get(id=kwargs["pk"])
+        except Project.DoesNotExist:
+            return DRFResponse(
+                data={
+                    "id": [f"Project with id={kwargs['pk']} does not exist."]
+                },
+                status=HTTP_404_NOT_FOUND
+            )
+
+        self.check_object_permissions(request=request, obj=project)
+
+
+        serializer: TaskCreateSerializer = TaskCreateSerializer(
+            data=request.data,
+            context={
+                "pk": kwargs["pk"],
+                "request": request,
+            }
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        task: Task = serializer.save()
+        UserTask.objects.create(
+            task_id=task.id,
+            user_id=request.user.id,
+        )
+
+        return DRFResponse(
+            data=serializer.data,
+            status=HTTP_201_CREATED
+        )
+
+
+class TaskViewSet(ViewSet):
+    """
+    ViewSet for handling Task-related endpoints.
+    """
+    pass

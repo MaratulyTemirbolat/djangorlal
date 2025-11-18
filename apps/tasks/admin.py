@@ -19,7 +19,7 @@ class ProjectAdmin(ModelAdmin):
         "id",
         "name",
         "author",
-        "created_at"
+        "created_at",
     )
     list_display_links = (
         "id",
