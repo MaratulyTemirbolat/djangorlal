@@ -14,6 +14,7 @@ from rest_framework.decorators import action
 # Project modules
 from apps.auths.models import CustomUser
 from apps.auths.serializers import UserLoginSerializer, UserLoginResponseSerializer, UserLoginErrorsSerializer, HTTP405MethodNotAllowedSerializer
+from apps.abstracts.decorators import validate_serializer_data
 
 
 class CustomUserViewSet(ViewSet):
@@ -49,6 +50,7 @@ class CustomUserViewSet(ViewSet):
         url_name="login",
         permission_classes=(AllowAny,)
     )
+    @validate_serializer_data(serializer_class=UserLoginSerializer)
     def login(
         self,
         request: DRFRequest,
@@ -70,9 +72,7 @@ class CustomUserViewSet(ViewSet):
                 Response containing user data or error message.
         """
 
-        serializer: UserLoginSerializer = UserLoginSerializer(data=request.data)
-
-        serializer.is_valid(raise_exception=True)
+        serializer: UserLoginSerializer = kwargs["serializer"]
 
         user: CustomUser = serializer.validated_data.pop("user")
 

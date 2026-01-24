@@ -31,6 +31,11 @@ from apps.tasks.serializers import (
     TaskListSerializer,
     TaskCreateSerializer,
 )
+from apps.abstracts.decorators import (
+    validate_serializer_data,
+    find_queryset_object_by_query_pk,
+)
+
 
 def hello_view(
     request: HttpRequest,
@@ -68,6 +73,7 @@ class ProjectViewSet(ViewSet):
 
     # permission_classes = (IsAuthenticated,)
     serializer_class = ProjectBaseSerializer
+    queryset = Project.objects
 
 
     def list(
@@ -107,6 +113,7 @@ class ProjectViewSet(ViewSet):
             status=HTTP_200_OK
         )
 
+    @validate_serializer_data(serializer_class=ProjectCreateSerializer)
     def create(self, request: DRFRequest, *args: tuple[Any, ...], **kwargs: dict[str, Any]) -> DRFResponse:
         """
         Handle POST requests to create a new project.
@@ -123,16 +130,10 @@ class ProjectViewSet(ViewSet):
             DRFResponse
                 A response indicating the result of the creation operation.
         """
-        serializer: ProjectCreateSerializer = ProjectCreateSerializer(
-            data=request.data
-        )
-        
-        if not serializer.is_valid():
-            return DRFResponse(
-                data=serializer.errors,
-                status=HTTP_400_BAD_REQUEST
-            )
-        
+
+        # Fetch the validated serializer from the decorator
+        serializer: ProjectCreateSerializer = kwargs["serializer"]
+
         serializer.save()
 
         return DRFResponse(
@@ -140,6 +141,8 @@ class ProjectViewSet(ViewSet):
             status=HTTP_201_CREATED
         )
 
+    @find_queryset_object_by_query_pk(queryset=queryset, entity_name="Project")
+    @validate_serializer_data(serializer_class=ProjectUpdateSerializer)
     def partial_update(self, request: DRFRequest, *args: tuple[Any, ...], **kwargs: dict[str, Any]) -> DRFResponse:
         """
         Handle PATCH requests to partially update a project.
@@ -156,31 +159,19 @@ class ProjectViewSet(ViewSet):
             DRFResponse
                 A response indicating the result of the update operation.
         """
-        try:
-            project: Project = Project.objects.get(id=kwargs["pk"])
-        except Project.DoesNotExist:
-            return DRFResponse(
-                data={
-                    "pk": [f"Project with id={kwargs['pk']} does not exist."]
-                },
-                status=HTTP_404_NOT_FOUND
-            )
+        serializer: ProjectUpdateSerializer = kwargs["serializer"]
 
-        serializer: ProjectUpdateSerializer = ProjectUpdateSerializer(
-            data=request.data,
-            instance=project,
-            partial=True,
-        )
-
-        serializer.is_valid(raise_exception=True)
-
+        # Your signal is triggered here pre_save
         serializer.save()
+
+        # Your signal is triggered here post_save
 
         return DRFResponse(
             data=serializer.data,
             status=HTTP_200_OK
         )
 
+    @find_queryset_object_by_query_pk(queryset=queryset, entity_name="Project")
     def destroy(self, request: DRFRequest, *args: tuple[Any, ...], **kwargs: dict[str, Any]) -> DRFResponse:
         """
         Handle DELETE requests to delete a project.
@@ -197,16 +188,7 @@ class ProjectViewSet(ViewSet):
             DRFResponse
                 A response indicating the result of the deletion operation.
         """
-        try:
-            project: Project = Project.objects.get(id=kwargs["pk"])
-        except Project.DoesNotExist:
-            return DRFResponse(
-                data={
-                    "pk": [f"Project with id={kwargs['pk']} does not exist."]
-                },
-                status=HTTP_404_NOT_FOUND
-            )
-
+        project: Project = kwargs["object"]
         project.delete()
 
         return DRFResponse(
