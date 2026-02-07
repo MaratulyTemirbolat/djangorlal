@@ -6,6 +6,9 @@ from django.db.models import (
     EmailField,
     CharField,
     BooleanField,
+    ForeignKey,
+    SET_NULL,
+    ManyToManyField,
 )
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.contrib.auth.password_validation import validate_password
@@ -86,6 +89,24 @@ class CustomUserManager(BaseUserManager):
         return new_user
 
 
+class Company(AbstractBaseModel):
+    """Company model representing a company in the system."""
+
+    name = CharField(
+        max_length=150,
+        unique=True,
+        verbose_name="Company name",
+        help_text="Name of the company",
+    )
+
+    class Meta:
+        """Meta options for Company model."""
+
+        verbose_name = "Company"
+        verbose_name_plural = "Companies"
+        ordering = ["-created_at"]
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin, AbstractBaseModel):
     """
     Custom user model extending AbstractBaseModel.
@@ -123,6 +144,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, AbstractBaseModel):
         default=True,
         verbose_name="Active status",
         help_text="True if the user is active and has an access to request data",
+    )
+    company = ForeignKey(
+        to=Company,
+        on_delete=SET_NULL,
+        null=True,
+        verbose_name="Company",
+        help_text="Company the user belongs to",
+    )
+    companies = ManyToManyField(
+        to=Company,
+        related_name="users",
+        blank=True,
+        verbose_name="Companies",
+        help_text="Companies the user belongs to",
     )
 
     REQUIRED_FIELDS = ["full_name"]
