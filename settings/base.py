@@ -44,6 +44,7 @@ INSTALLED_APPS = DJANGO_AND_THIRD_PARTY_APPS + PROJECT_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'apps.auths.middlewares.CustomLocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -86,8 +87,22 @@ AUTH_PASSWORD_VALIDATORS = [
 #
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
-USE_I18N = True
+USE_I18N = True  # Turn on translation system
+USE_L10N = True  # Format dates, numbers and calendars according to the current locale
 USE_TZ = True
+
+ENGLISH_LANGUAGE_CODE = "en"
+
+LANGUAGES = [
+    ("en", "English"),
+    ("kz", "Kazakh"),
+    ("ru", "Russian"),
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+
 
 # ----------------------------------------------
 # Static | Media

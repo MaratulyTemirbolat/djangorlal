@@ -1,6 +1,9 @@
 # Python modules
 from typing import Any, Optional
 
+# Django modules
+from django.utils.translation import gettext_lazy, gettext
+
 # Django REST Framework
 from rest_framework.serializers import Serializer, CharField, EmailField, IntegerField, ListField
 from rest_framework.exceptions import ValidationError
@@ -105,14 +108,19 @@ class UserLoginSerializer(Serializer):
         if not user:
             raise ValidationError(
                 detail={
-                    "email": [f"User with email '{email}' does not exist."]
+                    "email": [gettext("User with email %(email)s does not exist.") % {"email": email}]
                 }
             )
+        gettext("Dear %s, your order %s is ready.") % ("John", "#1234")
+        gettext("Dear %(name)s, your order %(order)s is ready.") % {"name": "John", "order": "#1234"}
+        # Дорогой Джон, ваш заказ #1234 готов.
+        # "%s тапсырысыныз дайын, %s" % ("#1234", "Джон")
+        # "%(order)s тапсырысыныз дайын, %(name)s"
 
         if not user.check_password(raw_password=password):
             raise ValidationError(
                 detail={
-                    "password": ["Incorrect password."]
+                    "password": [gettext("Incorrect password.")]
                 }
             )
 

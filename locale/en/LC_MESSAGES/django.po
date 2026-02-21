@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-21 06:42+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: apps/auths/models.py:126
+msgid "Email address"
+msgstr ""
+
+#: apps/auths/models.py:127
+msgid "User's email address"
+msgstr ""
+
+#: apps/auths/models.py:131
+msgid "Full name"
+msgstr ""
+
+#: apps/auths/models.py:132
+msgid "User's full name"
+msgstr ""
+
+#: apps/auths/models.py:137
+msgid "Password"
+msgstr ""
+
+#: apps/auths/models.py:138
+msgid "User's hash representation of the password"
+msgstr ""
+
+#: apps/auths/models.py:143
+msgid "Staff status"
+msgstr ""
+
+#: apps/auths/models.py:144
+msgid "True if the user is an admin and has an access to the admin panel"
+msgstr ""
+
+#: apps/auths/models.py:149
+msgid "Active status"
+msgstr ""
+
+#: apps/auths/models.py:150
+msgid "True if the user is active and has an access to request data"
+msgstr ""
+
+#: apps/auths/models.py:156
+msgid "Company"
+msgstr ""
+
+#: apps/auths/models.py:157
+msgid "Company the user belongs to"
+msgstr ""
+
+#: apps/auths/models.py:163
+msgid "Companies"
+msgstr ""
+
+#: apps/auths/models.py:164
+msgid "Companies the user belongs to"
+msgstr ""
+
+#: apps/auths/models.py:170
+msgid "Preferred language"
+msgstr ""
+
+#: apps/auths/models.py:171
+msgid "User's preferred language"
+msgstr ""
+
+#: apps/auths/models.py:181
+msgid "Custom User"
+msgstr ""
+
+#: apps/auths/models.py:182
+msgid "Custom Users"
+msgstr ""
+
+#: apps/auths/serializers.py:111
+#, python-format
+msgid "User with email %(email)s does not exist."
+msgstr ""
+
+#: apps/auths/serializers.py:114
+#, python-format
+msgid "Dear %s, your order %s is ready."
+msgstr ""
+
+#: apps/auths/serializers.py:115
+#, python-format
+msgid "Dear %(name)s, your order %(order)s is ready."
+msgstr ""
+
+#: apps/auths/serializers.py:123
+msgid "Incorrect password."
+msgstr ""

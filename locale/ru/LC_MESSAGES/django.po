@@ -1,0 +1,109 @@
+# Russian translations
+# Copyright (C) 2026
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-21 06:42+0000\n"
+"PO-Revision-Date: 2026-02-21 06:42+0000\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: apps/auths/models.py:126
+msgid "Email address"
+msgstr "Электронная почта"
+
+#: apps/auths/models.py:127
+msgid "User's email address"
+msgstr "Электронная почта пользователя"
+
+#: apps/auths/models.py:131
+msgid "Full name"
+msgstr "Полное имя"
+
+#: apps/auths/models.py:132
+msgid "User's full name"
+msgstr "Полное имя пользователя"
+
+#: apps/auths/models.py:137
+msgid "Password"
+msgstr "Пароль"
+
+#: apps/auths/models.py:138
+msgid "User's hash representation of the password"
+msgstr "Хэш пароля пользователя"
+
+#: apps/auths/models.py:143
+msgid "Staff status"
+msgstr "Статус сотрудника"
+
+#: apps/auths/models.py:144
+msgid "True if the user is an admin and has an access to the admin panel"
+msgstr "True, если пользователь является администратором и имеет доступ к панели администратора"
+
+#: apps/auths/models.py:149
+msgid "Active status"
+msgstr "Статус активности"
+
+#: apps/auths/models.py:150
+msgid "True if the user is active and has an access to request data"
+msgstr "True, если пользователь активен и имеет доступ к запросам"
+
+#: apps/auths/models.py:156
+msgid "Company"
+msgstr "Компания"
+
+#: apps/auths/models.py:157
+msgid "Company the user belongs to"
+msgstr "Компания, к которой принадлежит пользователь"
+
+#: apps/auths/models.py:163
+msgid "Companies"
+msgstr "Компании"
+
+#: apps/auths/models.py:164
+msgid "Companies the user belongs to"
+msgstr "Компании, к которым принадлежит пользователь"
+
+#: apps/auths/models.py:170
+msgid "Preferred language"
+msgstr "Предпочтительный язык"
+
+#: apps/auths/models.py:171
+msgid "User's preferred language"
+msgstr "Предпочтительный язык пользователя"
+
+#: apps/auths/models.py:181
+msgid "Custom User"
+msgstr "Пользователь"
+
+#: apps/auths/models.py:182
+msgid "Custom Users"
+msgstr "Пользователи"
+
+#: apps/auths/serializers.py:111
+#, python-format
+msgid "User with email %(email)s does not exist."
+msgstr "Пользователь с электронной почтой %(email)s не существует."
+
+#: apps/auths/serializers.py:114
+#, python-format
+msgid "Dear %s, your order %s is ready."
+msgstr "Дорогой %s, ваш заказ %s готов."
+
+#: apps/auths/serializers.py:115
+#, python-format
+msgid "Dear %(name)s, your order %(order)s is ready."
+msgstr "Дорогой %(name)s, ваш заказ %(order)s готов."
+
+#: apps/auths/serializers.py:123
+msgid "Incorrect password."
+msgstr "Неверный пароль."

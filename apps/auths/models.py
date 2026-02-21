@@ -10,6 +10,7 @@ from django.db.models import (
     SET_NULL,
     ManyToManyField,
 )
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -115,49 +116,59 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, AbstractBaseModel):
     FULL_NAME_MAX_LENGTH = 150
     PASSWORD_MAX_LENGTH = 254
 
+    PREFERRED_LANGUAGES = ["en", "ru", "kz"]
+
     email = EmailField(
         max_length=EMAIL_MAX_LENGTH,
         unique=True,
         db_index=True,
         validators=[validate_email_domain],
-        verbose_name="Email address",
-        help_text="User's email address",
+        verbose_name=_("Email address"),
+        help_text=_("User's email address"),
     )
     full_name = CharField(
         max_length=FULL_NAME_MAX_LENGTH,
-        verbose_name="Full name",
+        verbose_name=_("Full name"),
+        help_text=_("User's full name"),
     )
     password = CharField(
         max_length=PASSWORD_MAX_LENGTH,
         validators=[validate_password],
-        verbose_name="Password",
-        help_text="User's hash representation of the password",
+        verbose_name=_("Password"),
+        help_text=_("User's hash representation of the password"),
     )
     # True iff the user is part of the corporoom team, allowing them to access the admin panel
     is_staff = BooleanField(
         default=False,
-        verbose_name="Staff status",
-        help_text="True if the user is an admin and has an access to the admin panel",
+        verbose_name=_("Staff status"),
+        help_text=_("True if the user is an admin and has an access to the admin panel"),
     )
     # True iff the user can make requests to the backend (include in company)
     is_active = BooleanField(
         default=True,
-        verbose_name="Active status",
-        help_text="True if the user is active and has an access to request data",
+        verbose_name=_("Active status"),
+        help_text=_("True if the user is active and has an access to request data"),
     )
     company = ForeignKey(
         to=Company,
         on_delete=SET_NULL,
         null=True,
-        verbose_name="Company",
-        help_text="Company the user belongs to",
+        verbose_name=_("Company"),
+        help_text=_("Company the user belongs to"),
     )
     companies = ManyToManyField(
         to=Company,
         related_name="users",
         blank=True,
-        verbose_name="Companies",
-        help_text="Companies the user belongs to",
+        verbose_name=_("Companies"),
+        help_text=_("Companies the user belongs to"),
+    )
+    preferred_language = CharField(
+        max_length=10,
+        choices=[(lang, lang) for lang in PREFERRED_LANGUAGES],
+        default="en",
+        verbose_name=_("Preferred language"),
+        help_text=_("User's preferred language"),
     )
 
     REQUIRED_FIELDS = ["full_name"]
@@ -167,8 +178,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, AbstractBaseModel):
     class Meta:
         """Meta options for CustomUser model."""
 
-        verbose_name = "Custom User"
-        verbose_name_plural = "Custom Users"
+        verbose_name = _("Custom User")
+        verbose_name_plural = _("Custom Users")
         ordering = ["-created_at"]
 
     def clean(self) -> None:
