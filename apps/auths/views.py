@@ -21,6 +21,7 @@ from rest_framework.decorators import action
 from apps.auths.models import CustomUser
 from apps.auths.serializers import UserLoginSerializer, UserLoginResponseSerializer, UserLoginErrorsSerializer, HTTP405MethodNotAllowedSerializer
 from apps.abstracts.decorators import validate_serializer_data
+from apps.auths.tasks import send_email
 
 
 class CustomUserViewSet(ViewSet):
@@ -85,6 +86,9 @@ class CustomUserViewSet(ViewSet):
         # Generate JWT tokens
         refresh_token: RefreshToken = RefreshToken.for_user(user)
         access_token: str = str(refresh_token.access_token)
+
+        # 2 second
+        send_email.delay(to_email=user.email, msg="You have successfully logged in.")
 
         return DRFResponse(
             data={
@@ -204,3 +208,6 @@ class CustomUserViewSet(ViewSet):
             streaming_content=event_stream(),
             content_type="text/event-stream"
         )
+
+#  Producer   -  Broker - Worker - Resulted backend
+# (Django ap) - (Redis) - (Celery) - (Redis)
