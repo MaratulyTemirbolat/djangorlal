@@ -117,3 +117,11 @@ SHELL_PLUS_MODEL_ALIASES = {
 SHELL_PLUS = "ipython"
 SHELL_PLUS_PRINT_SQL = True
 SHELL_PLUS_PRINT_SQL_TRUNCATE = 1000
+
+# ------------------------------------------------
+# Redis Configuration
+#
+REDIS_HOST = config("DJANGORLAR_REDIS_HOST", cast=str, default="localhost")
+REDIS_PORT = config("DJANGORLAR_REDIS_PORT", cast=int, default=6379)
+REDIS_CELERY_DB = config("DJANGORLAR_REDIS_CELERY_DB", cast=int, default=1)
+REDIS_DJANGORLAR_DB = config("DJANGORLAR_REDIS_DB", cast=int, default=2)
